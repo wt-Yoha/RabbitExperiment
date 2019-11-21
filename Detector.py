@@ -26,6 +26,14 @@ class Detector:
                 print("【", oName, "】", ": ", obj[0],obj[1], end=" ")
         print()
 
+    def checkStage(self, img):
+        image_data = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        pool_3_tensor = sess.graph.get_tensor_by_name('pool_3/_reshape:0')
+        feature = sess.run(pool_3_tensor, {'DecodeJpeg:0': image_data}) 
+        feature = feature - X_mean
+        feature = np.dot(feature, U[:,:1000])
+        result = net.predict(feature)
+
     def checkImg(self, img):
         assert isinstance(img, numpy.ndarray), "输入对象不是图片!"
 
@@ -71,4 +79,6 @@ if __name__ == '__main__':
         gradSys.beginMarkLine(detector.getCheckedObjects())
         gradSys.printTranscript()
         cv2.imshow("img", im)
-        cv2.waitKey(0)
+        k = cv2.waitKey(1)
+        if (k == ord('q')):
+            break

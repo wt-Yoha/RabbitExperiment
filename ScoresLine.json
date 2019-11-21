@@ -1,3 +1,16 @@
 {
-"scoresLine":["checkWound", "checkNeedle", "checkNerve"]
+"scoresLine":["checkWound", "checkNeedle", "checkNerve"],
+
+"input_dim" : 1000,
+"hidden_dim" : 100,
+"num_classes" : 4,
+"model_dir" : "model_params/inception",
+
+"W1" : "model_params/W1.txt",
+"b1" : "model_params/b1.txt",
+"W2" : "model_params/W2.txt",
+"b2" : "model_params/b2.txt",
+"X_mean" : "model_params/mean.txt",
+"U" : "model_params/PCA.txt"
 }
+
