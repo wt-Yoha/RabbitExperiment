@@ -1,5 +1,5 @@
 {
-"scoresLine":["checkWound", "checkNeedle", "checkNerve"],
+"scoresLine":["checkCatching", "checkWound", "checkNeedle", "checkNerve"],
 
 "input_dim" : 1000,
 "hidden_dim" : 100,
