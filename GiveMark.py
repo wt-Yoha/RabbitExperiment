@@ -42,6 +42,17 @@ class GiveMark:
 
 
 # =====================所有的评分方法在此添加============================================
+class checkCatching(GiveMark):
+    def giveMark(self, checkedObjects):
+        stage = checkedObjects[6][0]
+        rabbitPos = checkedObjects[0][2]
+        rabbitCenterX = (rabbitPos[0]+rabbitPos[2])/2
+        rabbitCenterY = (rabbitPos[1]+rabbitPos[3])/2
+        if(stage == 0 and rabbitCenterX>640 and rabbitCenterX<1280 and rabbitCenterY>360 and rabbitCenterY<720):
+            print('有效的抓拿判断帧...')
+            
+            
+    
 
 class checkWound(GiveMark):
     # 检查伤口是否存在
