@@ -2,7 +2,7 @@ import cv2
 import time
 import numpy
 import GiveMark
-
+from StageEstimate import StageEstimate
 
 class Detector:
     # 运行的检测类，用于检测当前图片上的物品，并维护一个 List checkedObject
@@ -15,27 +15,30 @@ class Detector:
         # 列表的值 第一项为 Object 到目前为止出现的次数(为了减小错误识别造成的影响，暂定出现40次时确定该物品已被检测到) , 第二项为一个标识 Object 当前位置的元组
         self.checkedObjects = [[0, []] for i in range(self.classNum)]
         self.net = cv2.dnn.readNetFromCaffe(self.deploy_path, self.model_path)
+        self.se= StageEstimate("ScoresLine.json")
+        self.se.create_graph()
+
 
     def getCheckedObjects(self):
         return self.checkedObjects
 
     def printCheckedObjects(self):
         objName = ['兔子', '剪刀', '伤口', '手', '耳朵', '针头']
+        stageName = ['抓拿', '麻醉', '固定', '手术']
+        length = len(self.checkedObjects)
+        print("Stage :", stageName[self.checkedObjects[length-1]])
         for oName, obj in zip(objName, self.checkedObjects):
             if obj[0] > 0:
                 print("【", oName, "】", ": ", obj[0],obj[1], end=" ")
         print()
-
-    def checkStage(self, img):
-        image_data = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        pool_3_tensor = sess.graph.get_tensor_by_name('pool_3/_reshape:0')
-        feature = sess.run(pool_3_tensor, {'DecodeJpeg:0': image_data}) 
-        feature = feature - X_mean
-        feature = np.dot(feature, U[:,:1000])
-        result = net.predict(feature)
+        
 
     def checkImg(self, img):
         assert isinstance(img, numpy.ndarray), "输入对象不是图片!"
+        
+        # 1.Check Stage
+        stage = self.se.estimate(img)
+        self.checkedObjects.append(stage[0])
 
         rows = img.shape[0]
         cols = img.shape[1]
@@ -71,7 +74,7 @@ if __name__ == '__main__':
     gradSys = GiveMark.GradeSYS("ScoresLine.json")
 
     import glob
-    imgStram = glob.glob("img/*.jpg")  # 获取img路径下的所有 jpg 图片
+    imgStram = glob.glob("img_catching/*.png")  # 获取img路径下的所有 jpg 图片
     for im in imgStram:
         im = cv2.imread(im)
         im = detector.checkImg(im)
@@ -79,6 +82,6 @@ if __name__ == '__main__':
         gradSys.beginMarkLine(detector.getCheckedObjects())
         gradSys.printTranscript()
         cv2.imshow("img", im)
-        k = cv2.waitKey(1)
+        k = cv2.waitKey(0)
         if (k == ord('q')):
             break
