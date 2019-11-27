@@ -48,8 +48,27 @@ class checkCatching(GiveMark):
         rabbitPos = checkedObjects[0][2]
         rabbitCenterX = (rabbitPos[0]+rabbitPos[2])/2
         rabbitCenterY = (rabbitPos[1]+rabbitPos[3])/2
-        if(stage == 0 and rabbitCenterX>640 and rabbitCenterX<1280 and rabbitCenterY>360 and rabbitCenterY<720):
+        if (stage == 0 and rabbitCenterX>640 and rabbitCenterX<1280 and rabbitCenterY>360 and rabbitCenterY<720):
             print('有效的抓拿判断帧...')
+            if (checkedObjects[3][0] == 1 and checkedObjects[4][0] == 1):
+                handPos = checkedObjects[3][2]
+                earPos = checkedObjects[4][2]
+                j = self.judgeCatching(handPos, earPos)
+                if j:
+                	self.transcript['抓拿判定'] = 10
+                else:
+                	self.transcript['抓拿判定'] = 0
+                print('抓拿判定结束')
+	
+    def judgeCatching(self, handPos, earPos):
+        if earPos[2]<handPos[0]:
+           print('错误！抓屁股')
+           return False
+        elif (earPos[0]>handPos[0]-30 and earPos[2]<handPos[2]+30):
+           print('错误！抓耳朵')
+           return False
+        else:
+           return True
             
             
     
